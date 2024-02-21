@@ -1,6 +1,7 @@
 [submodule "cpython"]
 	path = cpython
 	url = https://github.com/python/cpython
+	branch = db85d51d3ea4adfc6147d6af400e167659689eed
 [submodule "regex/src"]
 	path = regex/src
 	url = https://github.com/mrabarnett/mrab-regex
