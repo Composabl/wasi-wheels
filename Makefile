@@ -1,7 +1,8 @@
+PYTHON_VERSION := 3.11
 BUILD_DIR := $(abspath build)
 WASI_SDK := $(BUILD_DIR)/wasi-sdk
 CPYTHON := $(abspath cpython/builddir/wasi/install)
-SYSCONFIG := $(abspath cpython/builddir/wasi/build/lib.wasi-wasm32-3.12)
+SYSCONFIG := $(abspath cpython/builddir/wasi/build/lib.wasi-wasm32-$(PYTHON_VERSION))
 OUTPUTS := \
 	$(BUILD_DIR)/aiohttp-wasi.tar.gz \
 	$(BUILD_DIR)/charset_normalizer-wasi.tar.gz \
@@ -18,10 +19,14 @@ OUTPUTS := \
 	$(BUILD_DIR)/yaml-wasi.tar.gz \
 	$(BUILD_DIR)/_yaml-wasi.tar.gz \
 	$(BUILD_DIR)/yarl-wasi.tar.gz
-WASI_SDK_VERSION := 20.31gfe4d2f01387d
-WASI_SDK_RELEASE := shared-library-alpha-3
+# WASI_SDK_VERSION := 20.31gfe4d2f01387d
+# WASI_SDK_RELEASE := shared-library-alpha-3
 HOST_PLATFORM := $(shell uname -s | sed -e 's/Darwin/macos/' -e 's/Linux/linux/')
-PYO3_CROSS_LIB_DIR := $(abspath cpython/builddir/wasi/build/lib.wasi-wasm32-3.12)
+PYO3_CROSS_LIB_DIR := $(abspath cpython/builddir/wasi/build/lib.wasi-wasm32-$(PYTHON_VERSION))
+WASI_SDK_VERSION := 21.0
+WASI_SDK_RELEASE := wasi-sdk-21
+# WASI_SDK_URL := "https://github.com/dicej/wasi-sdk/releases/download/$(WASI_SDK_RELEASE)/wasi-sdk-$(WASI_SDK_VERSION)-$(HOST_PLATFORM).tar.gz"
+WASI_SDK_URL := "https://github.com/WebAssembly/wasi-sdk/releases/download/$(WASI_SDK_RELEASE)/wasi-sdk-$(WASI_SDK_VERSION)-$(HOST_PLATFORM).tar.gz"
 
 .PHONY: all
 all: $(OUTPUTS)
@@ -117,7 +122,7 @@ $(BUILD_DIR)/yarl-wasi.tar.gz: $(WASI_SDK) $(CPYTHON)
 $(WASI_SDK):
 	@mkdir -p "$(@D)"
 	(cd "$(@D)" && \
-		curl -LO "https://github.com/dicej/wasi-sdk/releases/download/$(WASI_SDK_RELEASE)/wasi-sdk-$(WASI_SDK_VERSION)-$(HOST_PLATFORM).tar.gz" && \
+		curl -LO $(WASI_SDK_URL) && \
 		tar xf "wasi-sdk-$(WASI_SDK_VERSION)-$(HOST_PLATFORM).tar.gz" && \
 		mv "wasi-sdk-$(WASI_SDK_VERSION)" wasi-sdk && \
 		rm "wasi-sdk-$(WASI_SDK_VERSION)-$(HOST_PLATFORM).tar.gz")

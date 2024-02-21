@@ -1,6 +1,6 @@
 [submodule "cpython"]
 	path = cpython
-	url = https://github.com/dicej/cpython
+	url = https://github.com/python/cpython
 [submodule "regex/src"]
 	path = regex/src
 	url = https://github.com/mrabarnett/mrab-regex

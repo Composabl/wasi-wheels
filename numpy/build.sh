@@ -1,11 +1,12 @@
 #!/bin/bash
+PYTHON_VERSION=3.11
 
 set -eou pipefail
 
 ARCH_TRIPLET=_wasi_wasm32-wasi
 
 if [ ! -e venv ]; then
-  python3.12 -m venv venv
+  python${PYTHON_VERSION} -m venv venv
 fi
 
 . venv/bin/activate
@@ -13,10 +14,10 @@ fi
 export CC="${WASI_SDK_PATH}/bin/clang"
 export CXX="${WASI_SDK_PATH}/bin/clang++"
 
-export PYTHONPATH=$CROSS_PREFIX/lib/python3.12
+export PYTHONPATH=$CROSS_PREFIX/lib/python${PYTHON_VERSION}
 
-export CFLAGS="-I${CROSS_PREFIX}/include/python3.12 -D__EMSCRIPTEN__=1 -DNPY_NO_SIGNAL"
-export CXXFLAGS="-I${CROSS_PREFIX}/include/python3.12"
+export CFLAGS="-I${CROSS_PREFIX}/include/python${PYTHON_VERSION} -D__EMSCRIPTEN__=1 -DNPY_NO_SIGNAL"
+export CXXFLAGS="-I${CROSS_PREFIX}/include/python${PYTHON_VERSION}"
 export LDSHARED=${CC}
 export AR="${WASI_SDK_PATH}/bin/ar"
 export RANLIB=true

@@ -1,9 +1,10 @@
 #!/bin/bash
+PYTHON_VERSION=3.11
 
 set -eou pipefail
 
 if [ ! -e venv ]; then
-  python3.12 -m venv venv
+  python${PYTHON_VERSION} -m venv venv
 fi
 
 . venv/bin/activate
@@ -15,7 +16,7 @@ pip install build wheel setuptools meson[ninja]==1.2.1 meson-python==0.13.1 vers
 # Ideally we'd be compiling pandas' copy of numpy against the WASI numpy we've
 # already built, but it seems like pandas is set up to compile against a local,
 # import-able copy of numpy instead.
-cat >venv/lib/python3.12/site-packages/numpy/core/include/numpy/npy_interrupt.h <<'EOF'
+cat >venv/lib/python${PYTHON_VERSION}/site-packages/numpy/core/include/numpy/npy_interrupt.h <<'EOF'
 
 #ifndef NUMPY_CORE_INCLUDE_NUMPY_NPY_INTERRUPT_H_
 #define NUMPY_CORE_INCLUDE_NUMPY_NPY_INTERRUPT_H_
@@ -32,10 +33,10 @@ ARCH_TRIPLET=_wasi_wasm32-wasi
 export CC="${WASI_SDK_PATH}/bin/clang"
 export CXX="${WASI_SDK_PATH}/bin/clang++"
 
-export PYTHONPATH=$CROSS_PREFIX/lib/python3.12
+export PYTHONPATH=$CROSS_PREFIX/lib/python${PYTHON_VERSION}
 
-export CFLAGS="-I${CROSS_PREFIX}/include/python3.12 -D__EMSCRIPTEN__=1"
-export CXXFLAGS="-I${CROSS_PREFIX}/include/python3.12"
+export CFLAGS="-I${CROSS_PREFIX}/include/python${PYTHON_VERSION} -D__EMSCRIPTEN__=1"
+export CXXFLAGS="-I${CROSS_PREFIX}/include/python${PYTHON_VERSION}"
 export LDSHARED=${CC}
 export AR="${WASI_SDK_PATH}/bin/ar"
 export RANLIB=true
